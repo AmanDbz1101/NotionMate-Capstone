@@ -1,0 +1,30 @@
+# Environment and secrets
+.env
+env_notionmate/
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+
+# Data and outputs
+data/note_*.txt
+
+# Vector store
+vector_store/
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# OS
+.DS_Store
+Thumbs.db
+
+
+
+
