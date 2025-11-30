@@ -238,7 +238,7 @@ NotionMate-Capstone/
 ├── .env                             # Environment variables (create this)
 ├── .gitignore                       # Git ignore rules
 │
-├── main_chat/                       # RAG chatbot components
+├── rag_component/                   # RAG chatbot components
 │   ├── __init__.py
 │   ├── prompt.py                    # RAG system prompts
 │   └── memory_creator.py            # Vector store initialization
@@ -279,7 +279,7 @@ NotionMate-Capstone/
 - **`main.py`**: Entry point with Streamlit UI, RAG pipeline, and Notion integration
 - **`notion_agent/agent.py`**: Orchestrates the 5-agent sequential workflow
 - **`notion_mcp_config.py`**: Configures NPX-based Notion MCP server connection
-- **`main_chat/memory_creator.py`**: Creates vector embeddings from PDFs
+- **`rag_component/memory_creator.py`**: Creates vector embeddings from PDFs
 
 ---
 
@@ -386,7 +386,7 @@ mkdir -p data
 
 3. Run the memory creator script:
 ```bash
-python main_chat/memory_creator.py
+python rag_component/memory_creator.py
 ```
 
 This will:

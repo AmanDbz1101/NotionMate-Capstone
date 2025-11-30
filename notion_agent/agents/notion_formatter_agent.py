@@ -11,7 +11,7 @@ from pydantic import BaseModel, Field
 from langchain_groq import ChatGroq
 from dotenv import load_dotenv
 from datetime import datetime
-from main_chat.prompt import get_notion_formatter_prompt
+from rag_component.prompt import get_notion_formatter_prompt
 
 load_dotenv()
 

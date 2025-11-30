@@ -12,7 +12,7 @@ from langchain_groq import ChatGroq
 from dotenv import load_dotenv
 
 # Project imports
-from main_chat.prompt import call_prompt
+from rag_component.prompt import call_prompt
 from notion_agent.agent import create_note_from_history
 from notion_agent.tools.notion_page_info_retriever import get_notion_pages
 
