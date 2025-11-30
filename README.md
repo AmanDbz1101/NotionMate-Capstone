@@ -505,6 +505,51 @@ Result: Structured health info + relevant imagery
 
 ---
 
+## 🚀 Deployment
+
+### Streamlit Cloud Deployment
+
+This application is deployed on **Streamlit Cloud** and is publicly accessible.
+
+#### Deployment Configuration:
+
+1. **packages.txt**: Added to enable NPX support in Streamlit Cloud environment
+   ```
+   nodejs
+   npm
+   ```
+
+2. **Streamlit Secrets Configuration**:
+   
+   In Streamlit Cloud, secrets are configured differently than local `.env` files. The following environment variables were set:
+
+   ```toml
+   # In Streamlit Cloud Secrets (Settings → Secrets)
+   HUGGINGFACE_API_KEY = "your_key_here"
+   GOOGLE_API_KEY = "your_key_here"
+   GROQ_API_KEY = "your_key_here"
+   SERPER_API_KEY = "your_key_here"
+   NOTION_TOKEN = "your_token_here"
+   
+   # For Streamlit Cloud deployment, use simplified NPX path
+   NPX_EXECUTABLE_PATH = "npx"
+   ```
+
+   **Note**: On Streamlit Cloud, `NPX_EXECUTABLE_PATH` is set to simply `"npx"` instead of the full path, as Node.js and NPX are installed globally via `packages.txt`.
+
+3. **Deployment Steps**:
+   - Push code to GitHub repository
+   - Connect repository to Streamlit Cloud
+   - Add `packages.txt` with Node.js dependencies
+   - Configure secrets in Streamlit Cloud dashboard
+   - Deploy!
+
+4. **Key Differences from Local Setup**:
+   - Local: Uses full NPX path (e.g., `/home/user/.nvm/versions/node/v24.11.1/bin/npx`)
+   - Streamlit Cloud: Uses `"npx"` directly (installed via `packages.txt`)
+
+---
+
 ## 🤝 Contributing
 
 Contributions are welcome! Please feel free to submit a Pull Request.
