@@ -53,7 +53,8 @@ root_agent = note_creation_workflow
 
 async def create_note_from_history_async(
     chat_history: str, 
-    notion_page_id: Optional[str] = None
+    notion_page_id: Optional[str] = None,
+    notion_token: Optional[str] = None
 ) -> Dict[str, Any]:
     """
     Create a note from chat history and write to Notion using ADK Sequential Agents.
@@ -61,11 +62,18 @@ async def create_note_from_history_async(
     Args:
         chat_history: Full chat history as a formatted string
         notion_page_id: Optional specific Notion page ID to write to
+        notion_token: User's Notion integration token
         
     Returns:
         dict: Result containing success status, summary, topic, image_url, and Notion info
     """
     try:
+        if not notion_token:
+            return {
+                "success": False,
+                "error": "Notion token is required"
+            }
+        
         # Create session service
         session_service = InMemorySessionService()
         
@@ -77,7 +85,8 @@ async def create_note_from_history_async(
         # Create session with initial state
         initial_state = {
             "chat_history": chat_history,
-            "notion_page_id": notion_page_id or ""
+            "notion_page_id": notion_page_id or "",
+            "notion_token": notion_token
         }
         
         session = await session_service.create_session(
@@ -155,7 +164,8 @@ async def create_note_from_history_async(
 
 def create_note_from_history(
     chat_history: str, 
-    notion_page_id: Optional[str] = None
+    notion_page_id: Optional[str] = None,
+    notion_token: Optional[str] = None
 ) -> Dict[str, Any]:
     """
     Synchronous wrapper for create_note_from_history_async.
@@ -163,12 +173,13 @@ def create_note_from_history(
     Args:
         chat_history: Full chat history as a formatted string
         notion_page_id: Optional specific Notion page ID to write to
+        notion_token: User's Notion integration token
         
     Returns:
         dict: Result containing success status and all relevant data
     """
     try:
-        result = asyncio.run(create_note_from_history_async(chat_history, notion_page_id))
+        result = asyncio.run(create_note_from_history_async(chat_history, notion_page_id, notion_token))
         return result
     except Exception as e:
         return {

@@ -6,20 +6,27 @@ Searches for pages, creates/updates them without LangGraph complexity
 import json
 from dotenv import load_dotenv
 from langchain_mcp_adapters.client import MultiServerMCPClient
-from notion_mcp_config import SERVERS
+from notion_mcp_config import create_notion_servers_config
 
 load_dotenv()
 
 
-async def get_notion_pages():
+async def get_notion_pages(notion_token: str = None):
     """
     Get list of all available Notion pages
+    
+    Args:
+        notion_token: User's Notion integration token
     
     Returns:
         list: List of dicts with 'id' and 'title' keys
     """
     try:
-        client = MultiServerMCPClient(SERVERS)
+        if not notion_token:
+            return []
+        
+        servers_config = create_notion_servers_config(notion_token)
+        client = MultiServerMCPClient(servers_config)
         tools = await client.get_tools()
         
         search_tool = next((t for t in tools if "search" in t.name.lower()), None)

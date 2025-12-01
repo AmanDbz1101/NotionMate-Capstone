@@ -8,23 +8,30 @@ import asyncio
 import json
 from google.adk.tools.tool_context import ToolContext
 from langchain_mcp_adapters.client import MultiServerMCPClient
-from notion_mcp_config import SERVERS
+from notion_mcp_config import create_notion_servers_config
 
 
 def write_to_notion_tool(tool_context: ToolContext) -> str:
     """Write formatted blocks to Notion page using MCP tools"""
     notion_blocks = tool_context.state.get("notion_blocks", [])
     notion_page_id = tool_context.state.get("notion_page_id")
+    notion_token = tool_context.state.get("notion_token")
     
     if not notion_blocks:
         error_msg = "No Notion blocks available for writing"
         tool_context.state["notion_write_success"] = False
         return error_msg
     
+    if not notion_token:
+        error_msg = "No Notion token provided"
+        tool_context.state["notion_write_success"] = False
+        return error_msg
+    
     async def write_async():
         try:
-            # Initialize MCP client
-            client = MultiServerMCPClient(SERVERS)
+            # Initialize MCP client with user's token
+            servers_config = create_notion_servers_config(notion_token)
+            client = MultiServerMCPClient(servers_config)
             tools = await client.get_tools()
             
             # Find tools

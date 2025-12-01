@@ -52,26 +52,31 @@ def get_full_chat_history(messages):
     return "\n".join(formatted)
 
 
-def get_notion_pages_sync():
+def get_notion_pages_sync(notion_token: str = None):
     """Get list of Notion pages synchronously for Streamlit."""
     try:
+        if not notion_token:
+            return []
         loop = asyncio.new_event_loop()
         asyncio.set_event_loop(loop)
-        pages = loop.run_until_complete(get_notion_pages())
+        pages = loop.run_until_complete(get_notion_pages(notion_token))
         loop.close()
         return pages
     except Exception as e:
         return []
 
 
-def write_note_to_notion(messages, page_id: str = None):
+def write_note_to_notion(messages, page_id: str = None, notion_token: str = None):
     """Create note from chat history and write directly to Notion."""
     chat_history = get_full_chat_history(messages)
     if not chat_history:
         return "❌ No chat history available to create a note."
     
+    if not notion_token:
+        return "❌ Please enter your Notion Integration Token first."
+    
     try:
-        result = create_note_from_history(chat_history, notion_page_id=page_id)
+        result = create_note_from_history(chat_history, notion_page_id=page_id, notion_token=notion_token)
         
         if not result["success"]:
             return f"❌ Error: {result['error']}"
@@ -122,10 +127,13 @@ def main():
     if 'messages' not in st.session_state:
         st.session_state.messages = []
     
-    # Fetch Notion pages automatically on app start
+    # Initialize notion_token in session state
+    if 'notion_token' not in st.session_state:
+        st.session_state.notion_token = ""
+    
+    # Initialize notion_pages in session state
     if 'notion_pages' not in st.session_state:
-        with st.spinner("Loading Notion pages..."):
-            st.session_state.notion_pages = get_notion_pages_sync()
+        st.session_state.notion_pages = []
     
     # Use a unique key for the file uploader that can be reset
     file_uploader_key = "pdf_uploader"
@@ -134,6 +142,8 @@ def main():
     
     # Add the file uploader to the sidebar
     with st.sidebar:
+
+        
         st.header("Add Documents")
         st.markdown("Upload PDFs to enhance the chatbot's knowledge")
         uploaded_file = st.file_uploader("Upload a PDF file", 
@@ -155,6 +165,33 @@ def main():
             '<p style="color: yellow;">Pre-loaded information about gastritis healing.</p>',
             unsafe_allow_html=True
         )
+        # Notion Integration Section
+        st.header("🔗 Notion Integration")
+        notion_token_input = st.text_input(
+            "Notion Integration Token",
+            type="password",
+            value=st.session_state.notion_token,
+            help="Enter your Notion integration token. Get it from https://www.notion.so/my-integrations",
+            placeholder="secret_..."
+        )
+        
+        # Update token and fetch pages when token changes
+        if notion_token_input != st.session_state.notion_token:
+            st.session_state.notion_token = notion_token_input
+            if notion_token_input:
+                with st.spinner("Fetching Notion pages..."):
+                    st.session_state.notion_pages = get_notion_pages_sync(notion_token_input)
+                if st.session_state.notion_pages:
+                    st.success(f"✅ Connected! Found {len(st.session_state.notion_pages)} pages")
+                else:
+                    st.warning("⚠️ No pages found. Check your token and page permissions.")
+            else:
+                st.session_state.notion_pages = []
+        
+        # Show connection status
+        if st.session_state.notion_token and st.session_state.notion_pages:
+            st.info(f"📄 {len(st.session_state.notion_pages)} Notion pages available")
+        
         
         st.markdown("---")
         st.markdown("### Write to Notion")
@@ -173,13 +210,20 @@ def main():
                 (p['id'] for p in st.session_state.notion_pages if p['title'] == selected_page),
                 None
             )
-            
+
             if st.button("Write to Notion", type="primary"):
-                with st.spinner(f"📝 Creating summary and writing to '{selected_page}'..."):
-                    notion_response = write_note_to_notion(st.session_state.messages, selected_page_id)
-                    st.markdown(notion_response)
+                if not st.session_state.notion_token:
+                    st.error("❌ Please enter your Notion Integration Token first.")
+                else:
+                    with st.spinner(f"📝 Creating summary and writing to '{selected_page}'..."):
+                        notion_response = write_note_to_notion(
+                            st.session_state.messages, 
+                            selected_page_id,
+                            st.session_state.notion_token
+                        )
+                        st.markdown(notion_response)
         else:
-            st.warning("No Notion pages found. Please check your Notion connection.")
+            st.info("💡 Enter your Notion Integration Token above to connect your Notion pages.")
         
     # Set up placeholder for status messages
     status_container = st.container()
