@@ -9,6 +9,23 @@
   [![Google ADK](https://img.shields.io/badge/Google_ADK-1.0-orange.svg)](https://google.github.io/adk-docs/)
 </div>
 
+---
+
+## 🎬 Application Flow
+
+<div align="center">
+  <img src="data/chat.png" alt="Chat Interface" width="700"/>
+  <p><em>Step 1: Chat with AI using RAG-enhanced conversation</em></p>
+  
+  <img src="data/button_clicked.png" alt="Write to Notion Button" width="700"/>
+  <p><em>Step 2: Click "Write to Notion" to trigger agent workflow</em></p>
+  
+  <img src="data/notion.png" alt="Notion Output" width="700"/>
+  <p><em>Step 3: Beautifully formatted notes appear in your Notion page</em></p>
+</div>
+
+---
+
 ## 📋 Table of Contents
 - [Problem Statement](#-problem-statement)
 - [Solution](#-solution)
@@ -63,6 +80,7 @@ This leads to a cycle of **learning, forgetting, and re-searching** instead of *
 ---
 
 ## 🏗️ Architecture
+
 
 <div align="center">
   <img src="data/NotionMate Architecture.png" alt="NotionMate Architecture Diagram" width="800"/>
