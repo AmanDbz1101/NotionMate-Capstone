@@ -6,7 +6,7 @@
   [![Python](https://img.shields.io/badge/Python-3.12-blue.svg)](https://www.python.org/)
   [![Streamlit](https://img.shields.io/badge/Streamlit-1.40-red.svg)](https://streamlit.io/)
   [![LangChain](https://img.shields.io/badge/LangChain-0.3-green.svg)](https://langchain.com/)
-  [![Google ADK](https://img.shields.io/badge/Google_ADK-1.0-orange.svg)](https://github.com/google/generative-ai-docs)
+  [![Google ADK](https://img.shields.io/badge/Google_ADK-1.0-orange.svg)](https://google.github.io/adk-docs/)
 </div>
 
 ## 📋 Table of Contents
